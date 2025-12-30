@@ -74,8 +74,32 @@ button:hover {
 </head>
 
 <body>
+<div id="welcomeScreen" class="container">
+    <h2>SecureTrust Bank</h2>
+    <div class="subtitle">AI Security Demonstration</div>
 
-<div class="container">
+    <p style="font-size:14px; line-height:1.6; color:#444;">
+        This is a demo environment created to showcase how Artificial Intelligence
+        assists banks in making secure login decisions.
+    </p>
+
+    <div style="background:#f4f6f9; padding:12px; border-radius:5px; margin-top:15px;">
+        <strong>Demo Credentials</strong><br><br>
+        Username: <code>demo.user</code><br>
+        Password: <code>demo@123</code>
+    </div>
+
+    <button style="margin-top:20px;" onclick="startDemo()">
+        Proceed to Secure Login
+    </button>
+
+    <div class="footer">
+        Simulation only • No real banking access
+    </div>
+</div>
+
+<div class="container" id="loginScreen" style="display:none;">
+
     <h2>SecureTrust Bank</h2>
     <div class="subtitle">AI-Assisted Secure Login (Demo)</div>
 
