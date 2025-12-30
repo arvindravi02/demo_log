@@ -16,7 +16,7 @@ body {
     margin: 0;
 }
 .container {
-    width: 400px;
+    width: 420px;
     background: #ffffff;
     padding: 25px;
     border-radius: 8px;
@@ -64,6 +64,12 @@ button:hover {
 .low { background: #e6f4ea; color: #256029; }
 .medium { background: #fff4e5; color: #8a6d3b; }
 .high { background: #fdecea; color: #a94442; }
+
+.coach {
+    background: #eef3fb;
+    color: #1f3a5f;
+}
+
 .footer {
     margin-top: 15px;
     font-size: 11px;
@@ -75,33 +81,43 @@ button:hover {
 
 <body>
 
-<!-- WELCOME SCREEN -->
-<div id="welcomeScreen" class="container">
+<!-- LOGIN SCREEN -->
+<div id="loginScreen" class="container">
     <h2>SecureTrust Bank</h2>
-    <div class="subtitle">AI Security Demonstration</div>
+    <div class="subtitle">Secure Login</div>
 
-    <p style="font-size:14px; line-height:1.6; color:#444;">
-        This demo illustrates how AI assists banks in making secure login decisions.
-        Please enter test credentials to proceed.
-    </p>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
 
-    <input type="text" id="demoUser" placeholder="Enter username">
-    <input type="password" id="demoPass" placeholder="Enter password">
-
-    <button onclick="startDemo()">Proceed to Secure Login</button>
+    <button onclick="submitLogin()">Login</button>
 
     <div class="footer">
         Simulation only • Credentials are not validated
     </div>
 </div>
 
-<!-- LOGIN + AI SCREEN -->
-<div id="loginScreen" class="container" style="display:none;">
-    <h2>SecureTrust Bank</h2>
-    <div class="subtitle">AI-Assisted Secure Login</div>
+<!-- WELCOME SCREEN -->
+<div id="welcomeScreen" class="container" style="display:none;">
+    <h2>Welcome</h2>
+    <div class="subtitle" id="welcomeUser"></div>
 
-    <input type="text" id="loginUser" placeholder="Username">
-    <input type="password" id="loginPass" placeholder="Password">
+    <p style="font-size:14px; line-height:1.6; color:#444;">
+        Your login request has been received successfully.
+        Our AI security system will now evaluate the login context
+        to ensure your account is protected.
+    </p>
+
+    <button onclick="proceedToSecurity()">Continue</button>
+
+    <div class="footer">
+        AI-powered security check in progress
+    </div>
+</div>
+
+<!-- AI SECURITY SCREEN -->
+<div id="aiScreen" class="container" style="display:none;">
+    <h2>SecureTrust Bank</h2>
+    <div class="subtitle">AI Security Evaluation</div>
 
     <div class="section-title">Login Context (Simulated)</div>
 
@@ -125,12 +141,19 @@ button:hover {
         <option>Multiple rapid attempts</option>
     </select>
 
-    <button onclick="analyzeLogin()">Login</button>
+    <button onclick="analyzeLogin()">Evaluate Login</button>
 
+    <!-- AI Decision -->
     <div id="result" class="result"></div>
 
+    <!-- AI Coaching -->
+    <div id="coachBox" class="result coach" style="display:none;">
+        <strong>AI Security Recommendation</strong><br><br>
+        <span id="coachText"></span>
+    </div>
+
     <div class="footer">
-        Decision is based on context & behavior, not credentials
+        Decision is based on context & behavior
     </div>
 </div>
 
@@ -139,20 +162,27 @@ button:hover {
 const GEMINI_API_KEY = "AIzaSyDmDf5ffHlo3PkcxmM0xaSnI5JEGDobsFE";
 
 
-function startDemo() {
-    const user = document.getElementById("demoUser").value;
-    const pass = document.getElementById("demoPass").value;
+let currentUser = "";
+
+function submitLogin() {
+    const user = document.getElementById("username").value;
+    const pass = document.getElementById("password").value;
 
     if (!user || !pass) {
-        alert("Please enter username and password to continue.");
+        alert("Please enter username and password.");
         return;
     }
 
-    document.getElementById("loginUser").value = user;
-    document.getElementById("loginPass").value = pass;
+    currentUser = user;
 
+    document.getElementById("loginScreen").style.display = "none";
+    document.getElementById("welcomeUser").innerText = "Hello " + currentUser + ",";
+    document.getElementById("welcomeScreen").style.display = "block";
+}
+
+function proceedToSecurity() {
     document.getElementById("welcomeScreen").style.display = "none";
-    document.getElementById("loginScreen").style.display = "block";
+    document.getElementById("aiScreen").style.display = "block";
 }
 
 async function analyzeLogin() {
@@ -163,13 +193,25 @@ async function analyzeLogin() {
     const behavior = document.getElementById("behavior").value;
 
     const resultBox = document.getElementById("result");
+    const coachBox = document.getElementById("coachBox");
+    const coachText = document.getElementById("coachText");
+
     resultBox.style.display = "block";
+    coachBox.style.display = "none";
     resultBox.innerHTML = "AI is evaluating login risk…";
 
     const prompt = `
 You are a calm, customer-first banking security assistant.
-Your goal is to protect users without alarming them.
-Avoid technical jargon. Be reassuring and clear.
+
+Responsibilities:
+- Evaluate login safety
+- Explain decisions clearly
+- Coach users on better security habits
+
+Rules:
+- Be reassuring, not alarming
+- Avoid technical jargon
+- Sound supportive and professional
 
 Analyze this login attempt:
 - Time: ${time}
@@ -178,9 +220,11 @@ Analyze this login attempt:
 - Behavior: ${behavior}
 
 Respond strictly in this format:
+
 Risk Level:
 Decision:
 Explanation:
+Security Tip:
 `;
 
     try {
@@ -200,14 +244,27 @@ Explanation:
         const data = await response.json();
         const aiText = data.candidates[0].content.parts[0].text;
 
+        // Determine risk color
         let riskClass = "medium";
         if (aiText.includes("Low")) riskClass = "low";
         if (aiText.includes("High")) riskClass = "high";
 
         resultBox.className = `result ${riskClass}`;
+
+        // Split response
+        const lines = aiText.split("\n").filter(l => l.trim() !== "");
+
+        // Show decision (first parts)
         resultBox.innerHTML =
             "<strong>AI Security Decision</strong><br><br>" +
-            aiText.replace(/\n/g, "<br>");
+            lines.filter(l => !l.startsWith("Security Tip")).join("<br>");
+
+        // Show coaching tip
+        const tipLine = lines.find(l => l.startsWith("Security Tip"));
+        if (tipLine) {
+            coachText.innerText = tipLine.replace("Security Tip:", "").trim();
+            coachBox.style.display = "block";
+        }
 
     } catch (err) {
         // Fallback (offline / API failure)
@@ -215,8 +272,11 @@ Explanation:
         resultBox.innerHTML = `
             <strong>Security Check Completed</strong><br><br>
             Some unusual patterns were detected.
-            Additional verification is recommended to keep your account safe.
+            Additional verification is recommended.
         `;
+        coachText.innerText =
+            "For better security, use familiar devices and avoid logging in from unknown locations.";
+        coachBox.style.display = "block";
     }
 }
 </script>
