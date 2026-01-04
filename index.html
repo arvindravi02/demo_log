@@ -53,6 +53,25 @@
             70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(255, 87, 34, 0); }
             100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 87, 34, 0); }
         }
+
+        /* --- AI Character Animations --- */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-12px); }
+        }
+        .animate-float { animation: float 4s ease-in-out infinite; }
+
+        @keyframes blink {
+            0%, 90%, 100% { transform: scaleY(1); }
+            95% { transform: scaleY(0.1); }
+        }
+        .animate-blink { animation: blink 4s infinite; }
+        
+        @keyframes glow-pulse {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.1); }
+        }
+        .animate-glow { animation: glow-pulse 3s ease-in-out infinite; }
     </style>
 </head>
 <body class="font-sans text-slate-800">
@@ -133,17 +152,45 @@
             <main class="lg:col-span-3 space-y-8">
                 
                 <!-- Hero Banner -->
-                <div class="glass-panel rounded-2xl p-8 shadow-xl relative overflow-hidden group">
+                <div class="glass-panel rounded-2xl p-8 shadow-xl relative overflow-hidden group min-h-[300px] flex items-center">
+                    <!-- Background Decoration -->
                     <div class="absolute top-0 right-0 w-80 h-80 bg-orange-200 rounded-full blur-[80px] opacity-40 -translate-y-1/2 translate-x-1/3"></div>
-                    <div class="relative z-10">
+                    
+                    <!-- Text Content -->
+                    <div class="relative z-10 max-w-lg">
                         <span class="bg-gradient-to-r from-red-600 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide shadow-md">New Feature</span>
                         <h2 class="text-4xl font-serif font-bold text-slate-900 mt-4 mb-3">The Radiant Reader</h2>
-                        <p class="text-slate-700 max-w-lg mb-6 font-serif text-lg leading-relaxed">Illuminate your mind with our latest courses. Use the AI Tutor to spark new ideas.</p>
+                        <p class="text-slate-700 mb-6 font-serif text-lg leading-relaxed">Illuminate your mind with our latest courses. Use the AI Tutor to spark new ideas.</p>
                         <button onclick="toggleAI('General Learning')" class="bg-gradient-to-r from-red-700 to-orange-600 text-white px-8 py-3 rounded-xl font-serif font-bold hover:shadow-orange-500/50 hover:shadow-lg transform hover:-translate-y-1 transition border-t border-white/20">Open AI Tutor</button>
                     </div>
-                    <div class="absolute right-8 top-1/2 -translate-y-1/2 z-0 opacity-10 md:opacity-100 transition-opacity">
-                        <!-- Stylized Sun/Book Icon -->
-                        <div class="text-[10rem] text-orange-500/10"><i class="fas fa-sun"></i></div>
+
+                    <!-- Animated AI Character (Replacing the Icon) -->
+                    <div class="absolute right-8 md:right-16 top-1/2 -translate-y-1/2 z-0 hidden md:block">
+                        <div class="ai-character relative w-40 h-40 animate-float">
+                            <!-- Glow Effect -->
+                            <div class="absolute inset-0 bg-orange-500 rounded-full blur-3xl opacity-20 animate-glow"></div>
+                            
+                            <!-- Robot Container -->
+                            <div class="relative z-10">
+                                <!-- Antenna -->
+                                <div class="absolute -top-6 left-1/2 -translate-x-1/2 w-1 h-6 bg-slate-300"></div>
+                                <div class="absolute -top-8 left-1/2 -translate-x-1/2 w-3 h-3 bg-red-500 rounded-full animate-ping"></div>
+                                <div class="absolute -top-8 left-1/2 -translate-x-1/2 w-3 h-3 bg-red-500 rounded-full"></div>
+
+                                <!-- Head -->
+                                <div class="w-28 h-24 bg-white border-2 border-orange-100 rounded-3xl mx-auto shadow-2xl flex items-center justify-center relative overflow-hidden">
+                                    <!-- Face Screen -->
+                                    <div class="w-24 h-16 bg-slate-800 rounded-2xl flex items-center justify-center gap-4 relative shadow-inner">
+                                         <!-- Eyes -->
+                                         <div class="w-3 h-8 bg-blue-400 rounded-full animate-blink shadow-[0_0_10px_rgba(96,165,250,0.8)]"></div>
+                                         <div class="w-3 h-8 bg-blue-400 rounded-full animate-blink shadow-[0_0_10px_rgba(96,165,250,0.8)]"></div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Body (Simplified Neck/Torso) -->
+                                <div class="w-16 h-8 bg-gradient-to-b from-slate-100 to-slate-200 mx-auto -mt-3 rounded-b-2xl border border-orange-100 shadow-md relative -z-10"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -170,9 +217,9 @@
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 h-[calc(100vh-140px)]">
                 <!-- Left: Video & Content -->
-                <div class="lg:col-span-2 flex flex-col gap-6">
+                <div class="lg:col-span-2 flex flex-col gap-6 h-full overflow-hidden">
                     <!-- Video Player Placeholder -->
-                    <div class="glass-panel p-2 rounded-2xl shadow-2xl relative aspect-video flex items-center justify-center bg-black/80 overflow-hidden group">
+                    <div class="glass-panel p-2 rounded-2xl shadow-2xl relative flex items-center justify-center bg-black/80 overflow-hidden group flex-shrink-0" style="aspect-ratio: 30/9;">
                          <!-- Play Button -->
                          <div class="w-20 h-20 rounded-full bg-orange-600 text-white flex items-center justify-center text-3xl cursor-pointer hover:scale-110 transition pulse-ring z-10">
                             <i class="fas fa-play ml-1"></i>
@@ -185,7 +232,7 @@
                     </div>
 
                     <!-- Lesson Details -->
-                    <div class="glass-panel p-8 rounded-2xl shadow-lg flex-1 overflow-y-auto">
+                    <div class="glass-panel p-8 rounded-2xl shadow-lg flex-1 overflow-y-auto chat-scroll min-h-0">
                         <div class="flex justify-between items-start mb-6">
                             <div>
                                 <h1 id="player-course-title" class="text-3xl font-serif font-bold text-slate-900 mb-2">Course Title Here</h1>
@@ -196,15 +243,8 @@
                             </button>
                         </div>
                         
-                        <div class="prose prose-orange max-w-none text-slate-700 font-serif leading-relaxed">
-                            <h3 class="text-xl font-bold mb-3">Lesson Overview</h3>
-                            <p>Welcome to this module. In this session, we will explore the fundamental concepts necessary to master this skill. We will cover real-world applications, theoretical frameworks, and hands-on exercises designed to solidify your understanding.</p>
-                            <h3 class="text-xl font-bold mt-6 mb-3">Key Takeaways</h3>
-                            <ul class="list-disc pl-5 space-y-2">
-                                <li>Understanding the core principles.</li>
-                                <li>Analyzing case studies from industry leaders.</li>
-                                <li>Implementing best practices in your daily workflow.</li>
-                            </ul>
+                        <div id="player-lesson-content" class="prose prose-orange max-w-none text-slate-700 font-serif leading-relaxed">
+                            <!-- Content will be dynamically injected here -->
                         </div>
                     </div>
                 </div>
@@ -535,6 +575,165 @@
             // Populate Player Data
             document.getElementById('player-course-title').innerText = course.title;
             document.getElementById('player-instructor').innerText = `Instructor: ${course.instructor}`;
+            
+            // Populate Content Area
+            const contentArea = document.getElementById('player-lesson-content');
+            
+            // Base generic content
+            let contentHTML = `
+                <h3 class="text-xl font-bold mb-3">Lesson Overview</h3>
+                <p>Welcome to this module. In this session, we will explore the fundamental concepts necessary to master this skill. We will cover real-world applications, theoretical frameworks, and hands-on exercises designed to solidify your understanding.</p>
+                <h3 class="text-xl font-bold mt-6 mb-3">Key Takeaways</h3>
+                <ul class="list-disc pl-5 space-y-2">
+                    <li>Understanding the core principles.</li>
+                    <li>Analyzing case studies from industry leaders.</li>
+                    <li>Implementing best practices in your daily workflow.</li>
+                </ul>
+            `;
+
+            // Specific content for Operation Management (ID 101)
+            if (id === 101) {
+                contentHTML += `
+                    <div class="mt-8 pt-8 border-t-2 border-orange-100">
+                        <h3 class="text-2xl font-bold text-orange-900 mb-6 border-l-4 border-orange-500 pl-4">Core Operational Principles</h3>
+                        
+                        <div class="space-y-6">
+                            <div class="bg-white/60 p-4 rounded-xl shadow-sm border border-orange-100">
+                                <h4 class="font-bold text-lg text-orange-800 mb-2">Operational Excellence</h4>
+                                <p class="text-slate-700">Operational excellence focuses on delivering consistent, high-quality outcomes. It emphasizes efficiency, reliability, and continuous performance improvement. The goal is to achieve sustainable and predictable results.</p>
+                            </div>
+
+                            <div class="bg-white/60 p-4 rounded-xl shadow-sm border border-orange-100">
+                                <h4 class="font-bold text-lg text-orange-800 mb-2">Process Standardization</h4>
+                                <p class="text-slate-700">Process standardization involves documenting and following uniform procedures. It reduces errors, confusion, and dependency on individuals. Standard processes improve efficiency and scalability.</p>
+                            </div>
+
+                            <div class="bg-white/60 p-4 rounded-xl shadow-sm border border-orange-100">
+                                <h4 class="font-bold text-lg text-orange-800 mb-2">Scalability through Structure</h4>
+                                <p class="text-slate-700">Scalability through structure means building systems that support growth. Well-defined processes allow operations to expand without losing control. Structure ensures stability as workload and teams increase.</p>
+                            </div>
+                        </div>
+
+                        <h3 class="text-2xl font-bold text-orange-900 mt-10 mb-6 border-l-4 border-orange-500 pl-4">Operational Focus Areas</h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-white/60 p-4 rounded-xl shadow-sm border border-orange-100">
+                                <h4 class="font-bold text-lg text-orange-800 mb-2">Performance Alignment</h4>
+                                <p class="text-sm text-slate-700">Ensures individual efforts support organizational goals. It connects daily tasks with strategic objectives for measurable outcomes.</p>
+                            </div>
+                            
+                            <div class="bg-white/60 p-4 rounded-xl shadow-sm border border-orange-100">
+                                <h4 class="font-bold text-lg text-orange-800 mb-2">Execution Discipline</h4>
+                                <p class="text-sm text-slate-700">Refers to consistently following plans and processes. It ensures commitments are met on time and with quality. Discipline turns strategy into results.</p>
+                            </div>
+
+                            <div class="bg-white/60 p-4 rounded-xl shadow-sm border border-orange-100">
+                                <h4 class="font-bold text-lg text-orange-800 mb-2">Efficiency & Consistency</h4>
+                                <p class="text-sm text-slate-700">Focuses on achieving results with minimal waste. Consistency ensures reliable and repeatable outcomes, improving overall effectiveness.</p>
+                            </div>
+
+                            <div class="bg-white/60 p-4 rounded-xl shadow-sm border border-orange-100">
+                                <h4 class="font-bold text-lg text-orange-800 mb-2">Reduction of Chaos</h4>
+                                <p class="text-sm text-slate-700">Defined systems replace ad-hoc working methods. They provide clarity, predictability, and accountability to reduce disruptions.</p>
+                            </div>
+
+                            <div class="bg-white/60 p-4 rounded-xl shadow-sm border border-orange-100 md:col-span-2">
+                                <h4 class="font-bold text-lg text-orange-800 mb-2">Continuous Improvement</h4>
+                                <p class="text-sm text-slate-700">The ongoing effort to enhance processes and performance by learning from feedback and past results. This drives long-term operational excellence.</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (id === 102) {
+                // Specific content for Project Management Pro (ID 102)
+                contentHTML += `
+                    <div class="mt-8 pt-8 border-t-2 border-orange-100">
+                        <h3 class="text-2xl font-bold text-orange-900 mb-6 border-l-4 border-orange-500 pl-4">Core Project Management Concepts</h3>
+                        
+                        <div class="space-y-6">
+                            <div class="bg-white/60 p-4 rounded-xl shadow-sm border border-orange-100">
+                                <h4 class="font-bold text-lg text-orange-800 mb-2">Work Breakdown Structure (WBS)</h4>
+                                <p class="text-slate-700">WBS breaks a project into smaller, manageable components. It improves clarity, task ownership, and progress tracking. This structure prevents missed work and scope confusion.</p>
+                            </div>
+
+                            <div class="bg-white/60 p-4 rounded-xl shadow-sm border border-orange-100">
+                                <h4 class="font-bold text-lg text-orange-800 mb-2">RACI Matrix for Roles and Responsibilities</h4>
+                                <p class="text-slate-700">The RACI matrix defines who is Responsible, Accountable, Consulted, and Informed. It eliminates role ambiguity and decision delays. RACI improves accountability and communication.</p>
+                            </div>
+
+                            <div class="bg-white/60 p-4 rounded-xl shadow-sm border border-orange-100">
+                                <h4 class="font-bold text-lg text-orange-800 mb-2">Stakeholder Management</h4>
+                                <p class="text-slate-700">Stakeholder management involves identifying and engaging affected parties. It ensures expectations are understood and aligned. Effective engagement reduces resistance and surprises.</p>
+                            </div>
+
+                            <div class="bg-white/60 p-4 rounded-xl shadow-sm border border-orange-100">
+                                <h4 class="font-bold text-lg text-orange-800 mb-2">Risk Management</h4>
+                                <p class="text-slate-700">Project risk management identifies and prepares for uncertainties. It minimizes threats and protects project objectives. This improves project stability and success rates.</p>
+                            </div>
+
+                             <div class="bg-white/60 p-4 rounded-xl shadow-sm border border-orange-100">
+                                <h4 class="font-bold text-lg text-orange-800 mb-2">Monitoring and Control</h4>
+                                <p class="text-slate-700">Monitoring and control track project performance against plans. They help identify deviations early. Corrective actions ensure projects stay on course.</p>
+                            </div>
+
+                            <div class="bg-white/60 p-4 rounded-xl shadow-sm border border-orange-100">
+                                <h4 class="font-bold text-lg text-orange-800 mb-2">Project Closing and Lessons Learned</h4>
+                                <p class="text-slate-700">Project closing formally completes all activities. Lessons learned capture successes and mistakes for future use. This step ensures continuous organizational learning.</p>
+                            </div>
+                        </div>
+
+                        <h3 class="text-2xl font-bold text-orange-900 mt-10 mb-6 border-l-4 border-orange-500 pl-4">Advanced Project Management Topics</h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-white/60 p-4 rounded-xl shadow-sm border border-orange-100">
+                                <h4 class="font-bold text-lg text-orange-800 mb-2">Program Management</h4>
+                                <p class="text-sm text-slate-700">Program management coordinates related projects to achieve shared benefits. It focuses on outcomes rather than individual deliverables. This approach maximizes overall value.</p>
+                            </div>
+                            
+                            <div class="bg-white/60 p-4 rounded-xl shadow-sm border border-orange-100">
+                                <h4 class="font-bold text-lg text-orange-800 mb-2">Portfolio Management</h4>
+                                <p class="text-sm text-slate-700">Portfolio management prioritizes projects based on strategic goals. It balances resources, risk, and value across initiatives. This ensures alignment with organizational strategy.</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (id === 104) {
+                // Specific content for Leadership Styles (ID 104)
+                contentHTML += `
+                    <div class="mt-8 pt-8 border-t-2 border-orange-100">
+                        <h3 class="text-2xl font-bold text-orange-900 mb-6 border-l-4 border-orange-500 pl-4">Core Leadership Concepts</h3>
+                        
+                        <div class="space-y-6">
+                            <div class="bg-white/60 p-4 rounded-xl shadow-sm border border-orange-100">
+                                <h4 class="font-bold text-lg text-orange-800 mb-2">Servant Leadership</h4>
+                                <p class="text-slate-700">Servant leadership focuses on supporting and empowering team members. Leaders prioritize people’s growth and well-being. This style builds trust and collaboration.</p>
+                            </div>
+
+                            <div class="bg-white/60 p-4 rounded-xl shadow-sm border border-orange-100">
+                                <h4 class="font-bold text-lg text-orange-800 mb-2">Agile Leadership</h4>
+                                <p class="text-slate-700">Agile leadership promotes flexibility and rapid adaptation. Leaders empower teams to make decisions and innovate. It supports fast-changing environments.</p>
+                            </div>
+
+                            <div class="bg-white/60 p-4 rounded-xl shadow-sm border border-orange-100">
+                                <h4 class="font-bold text-lg text-orange-800 mb-2">Adaptive Leadership</h4>
+                                <p class="text-slate-700">Adaptive leadership helps teams navigate complex and changing challenges. Leaders encourage learning and shared problem-solving. This style builds resilience during uncertainty.</p>
+                            </div>
+
+                            <div class="bg-white/60 p-4 rounded-xl shadow-sm border border-orange-100">
+                                <h4 class="font-bold text-lg text-orange-800 mb-2">Silent Leadership</h4>
+                                <p class="text-slate-700">Silent leadership influences through actions rather than authority. Leaders lead by example without seeking recognition. Results and consistency define their impact.</p>
+                            </div>
+
+                            <div class="bg-white/60 p-4 rounded-xl shadow-sm border border-orange-100">
+                                <h4 class="font-bold text-lg text-orange-800 mb-2">Situational Leadership</h4>
+                                <p class="text-slate-700">Situational leadership adapts leadership style to the situation and team maturity. Leaders adjust their approach based on needs. This flexibility improves effectiveness.</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            contentArea.innerHTML = contentHTML;
             
             // Generate Syllabus
             const syllabusContainer = document.getElementById('player-syllabus');
